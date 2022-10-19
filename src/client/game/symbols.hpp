@@ -18,6 +18,7 @@ namespace game
 
 	// DB
 	WEAK symbol<void(XZoneInfo *zoneInfo, uint32_t zoneCount, bool sync, bool suppressSync)> DB_LoadXAssets{0x1414236A0_g};
+	WEAK symbol<DB_LoadData> g_load{ 0x14940E3B0_g };
 
 	// Live
 	WEAK symbol<bool(uint64_t, int*, bool)> Live_GetConnectivityInformation{0x141E0C410_g};
@@ -33,6 +34,10 @@ namespace game
 	WEAK symbol<const char*(const dvar_t* dvar)> Dvar_GetDebugName{0x1422BDCB0_g};
 	WEAK symbol<const char*(const dvar_t* dvar)> Dvar_GetString{0x1422BFFF0_g};
 	WEAK symbol<void(const char *dvarName, const char *string, bool createIfMissing)> Dvar_SetFromStringByName{0x1422C7F60_g};
+
+	// FS
+	WEAK symbol<int(const char* qpath, void** buffer)> FS_ReadFile{ 0x1422A5330_g };
+	WEAK symbol<void(void* buffer)> FS_FreeFile{ 0x1422A52E0_g };
 
 	// Variables
 	WEAK symbol<cmd_function_s> cmd_functions{0x15689FF58_g};
