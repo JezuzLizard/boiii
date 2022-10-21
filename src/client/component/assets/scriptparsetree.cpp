@@ -14,7 +14,7 @@ namespace assets
 {
 	namespace scriptparsetree
 	{
-		std::unordered_map<std::string, std::unique_ptr<char[]>> script_buffer_buffers;
+		std::unordered_map<std::string, std::unique_ptr<std::string>> script_buffer_buffers;
 
 		void dump_scriptparsetree(game::ScriptParseTree* script_parse_tree)
 		{
@@ -27,7 +27,7 @@ namespace assets
 			std::string buffer{};
 			if (script_parse_tree->buffer)
 			{
-				buffer = std::string(script_parse_tree->buffer, script_parse_tree->len);
+				buffer.assign(script_parse_tree->buffer, script_parse_tree->len);
 			}
 
 			utils::io::write_file(utils::string::va("dump/%s/%s", game::g_load->filename, script_parse_tree->name), buffer);
@@ -57,14 +57,14 @@ namespace assets
 				{
 					script_buffer_buffers.erase(itr);
 				}
-				script_buffer_buffers[script_parse_tree->name] = std::make_unique<char[]>(num_bytes_read);
+				script_buffer_buffers[script_parse_tree->name] = std::make_unique<std::string>();
 				itr = script_buffer_buffers.find(script_parse_tree->name);
-				auto script_parse_tree_entry_buffer = itr->second.get();
+				auto script_buffer = itr->second.get();
 
-				std::memcpy(script_parse_tree_entry_buffer, buffer, num_bytes_read);
+				script_buffer->assign(buffer, num_bytes_read);
 
 				script_parse_tree->len = num_bytes_read;
-				script_parse_tree->buffer = script_parse_tree_entry_buffer;
+				script_parse_tree->buffer = script_buffer->data();
 			}
 			else
 			{
@@ -73,11 +73,5 @@ namespace assets
 
 			game::FS_FreeFile(buffer);
 		}
-
-		class component final : public component_interface
-		{
-		public:
-		};
 	}
 }
-REGISTER_COMPONENT(assets::scriptparsetree::component)
