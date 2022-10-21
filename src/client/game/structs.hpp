@@ -611,10 +611,18 @@ namespace game
 		char* buffer;
 	};
 
+	struct ScriptParseTree
+	{
+		const char* name;
+		int len;
+		char* buffer;
+	};
+
 	union XAssetHeader
 	{
 		void* data;
 		RawFile* rawfile;
+		ScriptParseTree* scriptParseTree;
 	};
 
 	struct XAsset

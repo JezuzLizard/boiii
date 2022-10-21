@@ -9,6 +9,7 @@
 #include <utils/io.hpp>
 
 #include "rawfile.hpp"
+#include "scriptparsetree.hpp"
 
 namespace assets
 {
@@ -21,12 +22,18 @@ namespace assets
 		case game::ASSET_TYPE_RAWFILE:
 			if (utils::flags::has_flag("dump"))
 			{
-				rawfile::dump_rawfile(header.rawfile);
+				//rawfile::dump_rawfile(header.rawfile);
 			}
 
 			rawfile::override_rawfile(header.rawfile);
 			break;
+		case game::ASSET_TYPE_SCRIPTPARSETREE:
+			if (utils::flags::has_flag("dump"))
+			{
+				scriptparsetree::dump_scriptparsetree(header.scriptParseTree);
+			}
 
+			scriptparsetree::override_scriptparsetree(header.scriptParseTree);
 		default:
 			break;
 		}
