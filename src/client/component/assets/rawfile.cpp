@@ -14,7 +14,7 @@ namespace assets
 {
 	namespace rawfile
 	{
-		std::unordered_map<std::string, std::unique_ptr<char[]>> rawfile_buffers;
+		std::unordered_map<std::string, std::unique_ptr<std::string>> rawfile_buffers;
 
 		void dump_rawfile(game::RawFile* rawfile)
 		{
@@ -33,7 +33,7 @@ namespace assets
 			std::string buffer{};
 			if (rawfile->buffer)
 			{
-				buffer = std::string(rawfile->buffer, rawfile->len);
+				buffer.assign(rawfile->buffer, rawfile->len);
 			}
 
 			utils::io::write_file(utils::string::va("dump/%s/%s", game::g_load->filename, rawfile->name), buffer);
@@ -66,22 +66,15 @@ namespace assets
 			{
 				rawfile_buffers.erase(itr);
 			}
-			rawfile_buffers[rawfile->name] = std::make_unique<char[]>(num_bytes_read + 1);
+			rawfile_buffers[rawfile->name] = std::make_unique<std::string>();
 			itr = rawfile_buffers.find(rawfile->name);
-			auto rawfile_entry_buffer = itr->second.get();
+			auto rawfile_buffer = itr->second.get();
 
-			std::memcpy(rawfile_entry_buffer, buffer, num_bytes_read);
-			rawfile_entry_buffer[num_bytes_read] = '\0';
+			rawfile_buffer->assign(buffer, num_bytes_read);
 
 			rawfile->len = num_bytes_read;
-			rawfile->buffer = rawfile_entry_buffer;
+			rawfile->buffer = rawfile_buffer->data();
 			game::FS_FreeFile(buffer);
 		}
-
-		class component final : public component_interface
-		{
-		public:
-		};
 	}
 }
-REGISTER_COMPONENT(assets::rawfile::component)
